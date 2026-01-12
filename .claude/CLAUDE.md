@@ -4,20 +4,20 @@
 
 Users control the rigor level with scope tags. **Default is `[mvp]` when no tag is specified.**
 
-| Tag | Name | Planning | Threshold | Use When |
-|-----|------|----------|-----------|----------|
-| `[q]` | Quick | Skip entirely | - | Typos, one-liners, obvious fixes |
-| `[mvp]` | MVP | Lean planning | 8+ | Most features, default behavior |
-| `[prod]` | Production | Full rigor | 9+ | Core systems, complex refactors |
-| `[critical]` | Critical | Max scrutiny | 9.5+ | Security, payments, data integrity |
+| Tag | Name | Planning | Use When |
+|-----|------|----------|----------|
+| `[q]` | Quick | Skip entirely | Typos, one-liners, obvious fixes |
+| `[mvp]` | MVP | Lean planning | Most features, default behavior |
+| `[prod]` | Production | Full rigor | Core systems, complex refactors |
+| `[critical]` | Critical | Max scrutiny | Security, payments, data integrity |
 
 **Examples:**
 - `[q] fix the typo in header` → Just fix it, no planning
-- `add dark mode` → MVP (default), lean plan, 8+ to pass
-- `[prod] refactor auth system` → Full planning loop, 9+ required
-- `[critical] implement payment processing` → Maximum rigor, 9.5+ required
+- `add dark mode` → MVP (default), lean requirements + plan
+- `[prod] refactor auth system` → Thorough requirements, detailed plan
+- `[critical] implement payment processing` → Maximum rigor, detailed everything
 
-## The Planning Loop
+## The Planning Flow
 
 ```
          ┌──────────────┐
@@ -31,25 +31,25 @@ Users control the rigor level with scope tags. **Default is `[mvp]` when no tag 
           ┌─────┘     │
           │           ▼
           │    ┌──────────────┐
-          │    │  Architect   │◀──┐
-          │    │   Plans      │   │
-          │    └──────┬───────┘   │
-          │           │           │
-          │           ▼           │
-          │    ┌──────────────┐   │
-          │    │    Judge     │   │
-          │    │    Rates     │   │
-          │    └──────┬───────┘   │
-          │           │           │
-          │     ┌─────┴─────┐     │
-          │     │ Threshold?│     │
-          │     └─────┬─────┘     │
-          │      fail │  pass     │
-          │           └──────┐    │
-          │           │      │    │
-          │           └──────┘    │
-          │                  │
-          └────────┬─────────┘
+          │    │   Socrat     │
+          │    │   Gathers    │
+          │    │ Requirements │
+          │    └──────┬───────┘
+          │           │
+          │           ▼
+          │    ┌──────────────┐
+          │    │  Architect   │
+          │    │   Plans      │
+          │    └──────┬───────┘
+          │           │
+          │           ▼
+          │    ┌──────────────┐
+          │    │  Simplifier  │
+          │    │   Removes    │
+          │    │  Complexity  │
+          │    └──────┬───────┘
+          │           │
+          └────────┬──┘
                    ▼
             ┌──────────────┐
             │  Implement   │
@@ -64,22 +64,19 @@ Skip planning entirely. Just implement the change directly.
 
 **Step 1:** Identify scope (default: `[mvp]`)
 
-**Step 2:** Solution Architect creates plan calibrated to scope
+**Step 2:** Socrat gathers requirements via Socratic questioning → `*-requirements.md`
 
-**Step 3:** Solution Architect Judge evaluates with scope-appropriate criteria
+**Step 3:** Solution Architect creates plan from requirements → `*-plan.md`
 
-**Step 4:** Check against threshold:
-- `[mvp]`: 8+ passes
-- `[prod]`: 9+ passes
-- `[critical]`: 9.5+ passes
+**Step 4:** Simplifier reviews plan, asks user about removals, strips complexity → `*-simplified.md`
 
-**Step 5:** If below threshold, architect revises. If passes, implement.
+**Step 5:** Implement from the simplified plan
 
 ## Implementation Phase
 
-After passing the threshold:
+After simplification:
 
-1. Read the approved plan `.md` file
+1. Read the simplified plan (`*-simplified.md`)
 2. Follow the plan step-by-step
 3. Implement code changes as specified
 4. Do not deviate from the plan without re-planning
@@ -88,8 +85,9 @@ After passing the threshold:
 
 | Agent | Purpose | Output |
 |-------|---------|--------|
-| `solution-architect` | Creates detailed implementation plans | `*-plan.md` files |
-| `solution-architect-judge` | Evaluates and scores plans | `*.judge.md` files |
+| `socrat` | Gathers requirements via Socratic questioning | `*-requirements.md` files |
+| `solution-architect` | Creates implementation plans from requirements | `*-plan.md` files |
+| `simplifier` | Removes unnecessary complexity from plans | `*-simplified.md` files |
 
 ## File Storage
 
@@ -99,8 +97,9 @@ All agent-generated plans go to: `.claude/founder-mode-plans/`
 project/
 └── .claude/
     └── founder-mode-plans/
+        ├── feature-name-requirements.md
         ├── feature-name-plan.md
-        └── feature-name-plan.judge.md
+        └── feature-name-simplified.md
 ```
 
 These files are **temporary working documents**—gitignored, not committed. Once implementation is complete, they can be deleted.
@@ -109,6 +108,6 @@ These files are **temporary working documents**—gitignored, not committed. Onc
 
 - Forces thorough thinking before coding
 - Catches architectural issues early
+- Actively removes complexity (simplifier asks "do you really need this?")
 - Creates documentation as a byproduct
-- Reduces wasted effort from poor planning
-- Ensures quality through iteration
+- Reduces wasted effort from poor planning and over-engineering

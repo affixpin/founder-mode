@@ -1,10 +1,14 @@
 {
   "name": "affixpin-socratic",
-  "description": "https://github.com/affixpin/socratic",
+  "description": "Socratic Development - Question before acting. A methodology that uses discovery, architect, and simplifier agents.",
+  "owner": {
+    "name": "affixpin",
+    "github": "https://github.com/affixpin"
+  },
   "plugins": [
     {
       "name": "socratic",
-      "path": "."
+      "source": "."
     }
   ]
 }

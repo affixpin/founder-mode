@@ -2,7 +2,10 @@
   "name": "socratic",
   "version": "1.0.0",
   "description": "Socratic Development - Question before acting. A methodology that uses discovery, architect, and simplifier agents to build the right thing.",
-  "author": "affixpin",
+  "author": {
+    "name": "affixpin",
+    "email": "affixpin@users.noreply.github.com"
+  },
   "repository": "https://github.com/affixpin/socratic",
   "keywords": ["methodology", "planning", "requirements", "architecture", "simplification"]
 }

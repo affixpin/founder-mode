@@ -1,140 +1,127 @@
-# Founder Mode
+# Socratic
 
-A Claude Code configuration framework for solo founders to run an AI-powered startup team.
+A Claude Code configuration that implements the Socratic method for software development.
 
-## The Vision
+## The Idea
 
-Replace your startup team with a team of specialized AI subagents. As a founder, you become the manager of AI agents instead of human employees.
+Socrates believed that **wisdom begins with questioning**. He never claimed to have answers - instead, he asked probing questions until the truth emerged.
 
-```
-                    ┌─────────────┐
-                    │   FOUNDER   │
-                    │  (You)      │
-                    └──────┬──────┘
-                           │ manages
-           ┌───────────────┼───────────────┐
-           │               │               │
-           ▼               ▼               ▼
-    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-    │  Architect  │ │  Frontend   │ │  Marketing  │
-    │    Team     │ │    Team     │ │    Team     │
-    └─────────────┘ └─────────────┘ └─────────────┘
-           │               │               │
-    ┌──────┴──────┐ ┌──────┴──────┐ ┌──────┴──────┐
-    │   Agent  ◄──►  Judge   │ │   Agent  ◄──►  Judge   │ │   Agent  ◄──►  Judge   │
-    └─────────────┘ └─────────────┘ └─────────────┘
-```
+This config applies the same principle to coding:
 
-## Core Concept: Agent-Judge Pairs
+> **Don't assume. Question. Then act.**
 
-Every subagent comes in a pair:
+Every agent questions before acting. No assumptions survive unexamined.
 
-| Role | Agent | Judge |
-|------|-------|-------|
-| **Purpose** | Does the work | Reviews the work |
-| **Output** | Creates artifacts | Rates & critiques |
-| **Mindset** | Creative, productive | Critical, quality-focused |
-
-The pair creates a feedback loop:
+## The Method
 
 ```
-Agent creates → Judge rates → Score < 9? → Agent revises → Judge rates → ...
-                                   ↓
-                              Score 9+? → Done, approved
+"What are we building?"        → Discovery questions until clear
+"How should we build it?"      → Architect questions until solid
+"Is all of this necessary?"    → Simplifier questions until minimal
 ```
 
-## Why Pairs?
+Each phase uses the **socratic skill** - a questioning protocol:
 
-A single agent has no quality control. It will:
-- Miss edge cases
-- Make assumptions
-- Produce inconsistent quality
+1. Ask 2-3 probing questions
+2. Listen to the answer
+3. Go deeper or move on
+4. Confirm understanding before proceeding
 
-The judge forces iteration until quality standards are met. This mimics how real teams work: developers have code reviewers, writers have editors, designers have critics.
+The user always controls when to stop. Agents never assume they know enough.
 
-## Current Agents
+## The Flow
 
-### Solution Architecture Team
-- `solution-architect` - Plans features, designs systems, documents approaches
-- `solution-architect-judge` - Evaluates plans on 6 dimensions, scores 0-10
+```
+         ┌─────────────┐
+         │   Request   │
+         └──────┬──────┘
+                │
+                ▼
+         ┌─────────────┐
+         │  Discovery  │  "What problem? For whom? Why now?"
+         └──────┬──────┘
+                │
+                ▼
+         ┌─────────────┐
+         │  Architect  │  "What approach? What tradeoffs? What patterns?"
+         └──────┬──────┘
+                │
+                ▼
+         ┌─────────────┐
+         │ Simplifier  │  "Is this needed? What if we removed it?"
+         └──────┬──────┘
+                │
+                ▼
+         ┌─────────────┐
+         │  Implement  │
+         └─────────────┘
+```
 
-## Roadmap: Future Teams
+## Agents
 
-Build out agent pairs for each startup function:
+| Agent        | Questions About                     | Output            |
+| ------------ | ----------------------------------- | ----------------- |
+| `discovery`  | Requirements, users, constraints    | `*.discovery.md`  |
+| `architect`  | Design choices, patterns, tradeoffs | `*.architect.md`  |
+| `simplifier` | Necessity, complexity, removals     | `*.simplifier.md` |
 
-| Team | Agent | Judge | Status |
-|------|-------|-------|--------|
-| Architecture | `solution-architect` | `solution-architect-judge` | Done |
-| Frontend | `frontend-dev` | `frontend-reviewer` | Planned |
-| Backend | `backend-dev` | `backend-reviewer` | Planned |
-| Testing | `qa-engineer` | `qa-lead` | Planned |
-| DevOps | `devops-engineer` | `devops-reviewer` | Planned |
-| Copywriting | `copywriter` | `editor` | Planned |
-| Marketing | `marketer` | `marketing-strategist` | Planned |
-| Product | `product-manager` | `product-lead` | Planned |
+## The Skill
+
+All agents share one skill:
+
+```
+.claude/skills/socratic/SKILL.md
+```
+
+It defines how to question:
+
+- Batch questions (2-3 per round)
+- Adapt based on answers
+- Probe vague responses
+- Confirm before acting
+- Let user decide when done
 
 ## Setup
 
-1. Clone this repo
-2. Symlink to your home directory:
-   ```bash
-   ln -s /path/to/founder-mode/.claude ~/.claude
-   ```
-3. All Claude Code sessions now use this config globally
+```bash
+git clone https://github.com/yourname/socratic.git
+ln -s /path/to/socratic/.claude ~/.claude
+```
 
-## Directory Structure
+## Structure
 
 ```
 .claude/
-├── CLAUDE.md              # Global instructions (the workflow)
-├── settings.json          # Permissions & settings
-├── agents/                # Subagent definitions
-│   ├── solution-architect.md
-│   └── solution-architect-judge.md
-└── .gitignore
+├── CLAUDE.md                  # Workflow
+├── agents/
+│   ├── discovery.md           # Requirements gathering
+│   ├── architect.md           # Planning
+│   └── simplifier.md          # Complexity removal
+└── skills/
+    └── socratic/
+        └── SKILL.md           # Questioning protocol
 ```
 
-## Working Files
+## Output
 
-Agents output plans to `.claude/founder-mode-plans/` in each project:
-
-```
-your-project/
-└── .claude/
-    └── founder-mode-plans/
-        ├── auth-feature-plan.md
-        └── auth-feature-plan.judge.md
-```
-
-These are **temporary working files**—gitignored by default. Add this to your project's `.gitignore`:
+Agents write to `.claude/socratic/` in your project:
 
 ```
-.claude/founder-mode-plans/
+your-project/.claude/socratic/
+├── auth.discovery.md
+├── auth.architect.md
+└── auth.simplifier.md
 ```
-
-## The Founder's Job
-
-You don't write code. You don't design systems. You:
-
-1. **Define goals** - What needs to be built?
-2. **Delegate to agents** - "Use solution-architect to plan this feature"
-3. **Review approved work** - Only look at 9+ rated outputs
-4. **Make decisions** - Choose between options agents present
-5. **Manage priorities** - Direct which agent works on what
 
 ## Philosophy
 
-> "The best founders don't do the work. They build systems that do the work."
+> "I know that I know nothing." - Socrates
 
-This config turns Claude into that system. Each agent pair is a self-improving unit that iterates until quality is achieved. Your job is orchestration, not execution.
+The best code comes from admitting you don't fully understand the problem yet. These agents embody that humility - they question relentlessly until clarity emerges.
 
-## Contributing
+No rushing to solutions. No assuming requirements. No unexamined complexity.
 
-Add new agent pairs by creating two files in `.claude/agents/`:
-- `{role}.md` - The doer
-- `{role}-judge.md` - The reviewer
-
-Follow the existing patterns. Every agent needs its judge.
+Just questions, until the right answer becomes obvious.
 
 ## License
 

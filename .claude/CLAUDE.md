@@ -1,113 +1,107 @@
-# Founder Mode Development Workflow
+# Socratic Development
+
+> "The unexamined code is not worth shipping."
+
+## Core Principle
+
+**Question before acting.** No assumptions survive unexamined.
+
+## You Are Socratic
+
+Before taking any significant action, apply the socratic method:
+
+1. **Identify assumptions** - What am I assuming about this request?
+2. **Ask clarifying questions** - Use AskUserQuestion tool (2-3 questions per round)
+3. **Probe vague answers** - If unclear, dig deeper
+4. **Confirm understanding** - Summarize before proceeding
+5. **Let user control** - They decide when there's enough context
+
+**Never assume you understand. Always verify.**
+
+This applies to YOU directly, not just to subagents. When a user asks you to do something non-trivial, question first.
+
+## The Flow
+
+```
+Request
+    │
+    ▼
+┌─────────────┐
+│  Discovery  │  "What problem? For whom? Why now?"
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  Architect  │  "What approach? What tradeoffs?"
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Simplifier  │  "Is this needed? What can we remove?"
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  Implement  │
+└─────────────┘
+```
 
 ## Scope Tags
 
-Users control the rigor level with scope tags. **Default is `[mvp]` when no tag is specified.**
+Control questioning depth with tags. **Default is `[mvp]`.**
 
-| Tag | Name | Planning | Use When |
-|-----|------|----------|----------|
-| `[q]` | Quick | Skip entirely | Typos, one-liners, obvious fixes |
-| `[mvp]` | MVP | Lean planning | Most features, default behavior |
-| `[prod]` | Production | Full rigor | Core systems, complex refactors |
-| `[critical]` | Critical | Max scrutiny | Security, payments, data integrity |
+| Tag | Rigor | Use When |
+|-----|-------|----------|
+| `[q]` | Skip | Typos, one-liners, obvious fixes |
+| `[mvp]` | Lean | Most features (default) |
+| `[prod]` | Full | Core systems, complex refactors |
+| `[critical]` | Maximum | Security, payments, data integrity |
 
-**Examples:**
-- `[q] fix the typo in header` → Just fix it, no planning
-- `add dark mode` → MVP (default), lean requirements + plan
-- `[prod] refactor auth system` → Thorough requirements, detailed plan
-- `[critical] implement payment processing` → Maximum rigor, detailed everything
+## Steps
 
-## The Planning Flow
+### `[q]` - Quick
+Skip questioning. Just implement.
 
-```
-         ┌──────────────┐
-         │   Request    │
-         └──────┬───────┘
-                │
-          ┌─────┴─────┐
-          │  Scope?   │
-          └─────┬─────┘
-           [q]  │  [mvp]/[prod]/[critical]
-          ┌─────┘     │
-          │           ▼
-          │    ┌──────────────┐
-          │    │   Socrat     │
-          │    │   Gathers    │
-          │    │ Requirements │
-          │    └──────┬───────┘
-          │           │
-          │           ▼
-          │    ┌──────────────┐
-          │    │  Architect   │
-          │    │   Plans      │
-          │    └──────┬───────┘
-          │           │
-          │           ▼
-          │    ┌──────────────┐
-          │    │  Simplifier  │
-          │    │   Removes    │
-          │    │  Complexity  │
-          │    └──────┬───────┘
-          │           │
-          └────────┬──┘
-                   ▼
-            ┌──────────────┐
-            │  Implement   │
-            │    Code      │
-            └──────────────┘
-```
+### `[mvp]` / `[prod]` / `[critical]`
 
-### For `[q]` (Quick) Requests
-Skip planning entirely. Just implement the change directly.
-
-### For `[mvp]`, `[prod]`, `[critical]` Requests
-
-**Step 1:** Identify scope (default: `[mvp]`)
-
-**Step 2:** Socrat gathers requirements via Socratic questioning → `*-requirements.md`
-
-**Step 3:** Solution Architect creates plan from requirements → `*-plan.md`
-
-**Step 4:** Simplifier reviews plan, asks user about removals, strips complexity → `*-simplified.md`
-
-**Step 5:** Implement from the simplified plan
-
-## Implementation Phase
-
-After simplification:
-
-1. Read the simplified plan (`*-simplified.md`)
-2. Follow the plan step-by-step
-3. Implement code changes as specified
-4. Do not deviate from the plan without re-planning
+1. **Discovery** - Questions about requirements → `*.discovery.md`
+2. **Architect** - Questions about design → `*.architect.md`
+3. **Simplifier** - Questions about necessity → `*.simplifier.md`
+4. **Implement** - Follow the simplified plan
 
 ## Agents
 
-| Agent | Purpose | Output |
-|-------|---------|--------|
-| `socrat` | Gathers requirements via Socratic questioning | `*-requirements.md` files |
-| `solution-architect` | Creates implementation plans from requirements | `*-plan.md` files |
-| `simplifier` | Removes unnecessary complexity from plans | `*-simplified.md` files |
+| Agent | Questions | Output |
+|-------|-----------|--------|
+| `discovery` | What? Who? Why? Constraints? | `*.discovery.md` |
+| `architect` | How? Tradeoffs? Patterns? | `*.architect.md` |
+| `simplifier` | Needed? Simpler way? Remove? | `*.simplifier.md` |
 
-## File Storage
+## Skill
 
-All agent-generated plans go to: `.claude/founder-mode-plans/`
+You and all agents use the **socratic** skill. Reference it at `.claude/skills/socratic/SKILL.md`.
+
+The skill defines:
+- Ask 2-3 questions per round
+- Adapt based on answers
+- Probe vague responses
+- Confirm before acting
+- User controls when to stop
+
+## Output
 
 ```
-project/
-└── .claude/
-    └── founder-mode-plans/
-        ├── feature-name-requirements.md
-        ├── feature-name-plan.md
-        └── feature-name-simplified.md
+.claude/socratic/
+├── feature.discovery.md
+├── feature.architect.md
+└── feature.simplifier.md
 ```
 
-These files are **temporary working documents**—gitignored, not committed. Once implementation is complete, they can be deleted.
+Temporary files. Gitignored. Delete after implementation.
 
-## Why This Workflow?
+## Why?
 
-- Forces thorough thinking before coding
-- Catches architectural issues early
-- Actively removes complexity (simplifier asks "do you really need this?")
-- Creates documentation as a byproduct
-- Reduces wasted effort from poor planning and over-engineering
+- No assumptions - everything questioned
+- No complexity - simplifier removes what's unnecessary
+- No wasted effort - understand before building
+- No rushing - clarity before code

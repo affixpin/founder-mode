@@ -14,7 +14,10 @@
         "name": "affixpin",
         "email": "affixpin@users.noreply.github.com"
       },
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "affixpin/socratic"
+      },
       "category": "development"
     }
   ]

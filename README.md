@@ -11,6 +11,14 @@ A Claude Code plugin that implements the Socratic method for software developmen
 /plugin install socratic@affixpin-socratic
 ```
 
+## Updating
+
+```bash
+/plugin update socratic
+```
+
+> **Note:** This plugin is in beta. Run the update command frequently to get the latest fixes and features.
+
 ## The Idea
 
 Socrates believed that **wisdom begins with questioning**. He never claimed to have answers - instead, he asked probing questions until the truth emerged.
